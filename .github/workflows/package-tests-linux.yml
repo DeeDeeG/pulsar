@@ -32,13 +32,20 @@ jobs:
 
     - name: build the editor
       run: (yarn dist deb || yarn dist deb) && mv binaries/*deb pulsar.deb
-
+      
     - name: Cache pulsar
       id: cache-pulsar
       uses: actions/cache@v3
       with:
         path: pulsar.deb
         key: pulsar-${{ github.sha }}
+
+    - name: Cache dependencies
+      id: cache-dependencies
+      uses: actions/cache@v3
+      with:
+        path: node_modules, packages
+        key: dependencies-${{ github.sha }}
 
   test:
     name: Package
