@@ -31,7 +31,8 @@ class TextMateLanguageMode {
     this.largeFileMode = params.largeFileMode;
     this.config = params.config;
     this.grammar = params.grammar || NullGrammar;
-    this.largeFileModeThreshold = atom.config.get('editor.largeFileModeThreshold', {scope:this.grammar.scopeName})
+    this.largeFileModeThreshold = atom.config.get('editor.largeFileModeThreshold', {
+      scope: [this.grammar.scopeName]});
     this.largeFileMode =
       params.largeFileMode != null
         ? params.largeFileMode
