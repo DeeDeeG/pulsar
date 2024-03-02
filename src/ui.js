@@ -83,7 +83,7 @@ function renderMarkdown(content, givenOpts = {}) {
     sanitizeAllowSelfClose: true,
     breaks: false, // Convert `\n` in paragraphs into `<br>`
     handleFrontMatter: true, // Determines if Front Matter content should be parsed
-    useDefaultEmoji: true, // Use `markdown-it-emoji`
+    useDefaultEmoji: false, // Use `markdown-it-emoji`
     useGitHubHeadings: false, // Use `markdown-it-github-headings`
     useTaskCheckbox: true, // Use `markdown-it-task-checkbox`
     taskCheckboxDisabled: true, // `markdown-it-task-checkbox`: Disable checkbox interactivity
@@ -292,8 +292,8 @@ function renderMarkdown(content, givenOpts = {}) {
         if (match) {
           // We define breakline as a custom Token Type
           let token = state.push("html_inline", "breakline", 0);
-          token.content = "<br/>";
-          state.pos += "<br/>".length;
+          token.content = "<br>";
+          state.pos += match[0].length;
           return true;
         }
       }

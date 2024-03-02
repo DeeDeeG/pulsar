@@ -11,9 +11,9 @@ const { OnigScanner } = SecondMate;
 // Expects one of `textmate`, `node-tree-sitter`, or `wasm-tree-sitter`.
 function setConfigForLanguageMode(mode, options = {}) {
   let useTreeSitterParsers = mode !== 'textmate';
-  let useExperimentalModernTreeSitter = mode === 'wasm-tree-sitter';
+  let useLegacyTreeSitter = mode === 'node-tree-sitter';
   atom.config.set('core.useTreeSitterParsers', useTreeSitterParsers, options);
-  atom.config.set('core.useExperimentalModernTreeSitter', useExperimentalModernTreeSitter, options);
+  atom.config.set('core.useLegacyTreeSitter', useLegacyTreeSitter, options);
 }
 
 describe('GrammarRegistry', () => {
@@ -258,7 +258,7 @@ describe('GrammarRegistry', () => {
       // TODO: Why doesn't this path resolution work like the one above?
       const modernTreeSitterGrammar = grammarRegistry.loadGrammarSync(
         require.resolve(
-          '../packages/language-javascript/grammars/tree-sitter-2-javascript.cson'
+          '../packages/language-javascript/grammars/modern-tree-sitter-javascript.cson'
         )
       );
       expect(buffer.getLanguageMode().grammar).toBe(modernTreeSitterGrammar);
@@ -285,7 +285,7 @@ describe('GrammarRegistry', () => {
       // TODO: Why doesn't this path resolution work like the one above?
       const modernTreeSitterGrammar = grammarRegistry.loadGrammarSync(
         require.resolve(
-          '../packages/language-javascript/grammars/tree-sitter-2-javascript.cson'
+          '../packages/language-javascript/grammars/modern-tree-sitter-javascript.cson'
         )
       );
 
