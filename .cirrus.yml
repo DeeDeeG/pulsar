@@ -134,12 +134,13 @@ silicon_mac_task:
     ROLLING_UPLOAD_TOKEN: ENCRYPTED[e19187268935fd1a2e1db3304105cc4bf37d5f5a46ba519a1b952f8ac9a3d01982fa9b8274b838547aa37920774b7518]
   prepare_script:
     - brew update
-    - brew uninstall node icu4c
+    - brew uninstall node icu4c yarn
     - brew install node@16 git python@$PYTHON_VERSION python-setuptools
     - git submodule init
     - git submodule update
     - ln -s /opt/homebrew/bin/python$PYTHON_VERSION /opt/homebrew/bin/python
     - export PATH="/opt/homebrew/opt/node@16/bin:/opt/homebrew/bin:$PATH"
+    - npm install -g yarn
     - sed -i -e "s/[0-9]*-dev/`date -u +%Y%m%d%H`/g" package.json
   install_script:
     - export PATH="/opt/homebrew/opt/node@16/bin:/opt/homebrew/bin:$PATH"
@@ -193,9 +194,10 @@ silicon_mac_task:
 #     - arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 #     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
 #     - arch -x86_64 brew update
-#     - brew uninstall node icu4c
+#     - brew uninstall node icu4c yarn
 #     - arch -x86_64 brew install node@16 git python@$PYTHON_VERSION python-setuptools
 #     - ln -s /usr/local/bin/python$PYTHON_VERSION /usr/local/bin/python
+#     - npm install -g yarn
 #     - git submodule init
 #     - git submodule update
 #     - sed -i -e "s/[0-9]*-dev/`date -u +%Y%m%d%H`/g" package.json
