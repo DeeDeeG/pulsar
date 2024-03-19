@@ -56,7 +56,7 @@ env:
 
 arm_linux_task:
   alias: linux
-  only_if: false
+  only_if: $CIRRUS_CRON != "" || $CIRRUS_TAG != ""
   skip: $CIRRUS_CHANGE_IN_REPO == $CIRRUS_LAST_GREEN_CHANGE
   arm_container:
     image: node:16-slim
@@ -120,10 +120,10 @@ arm_linux_task:
 
 silicon_mac_task:
   alias: mac
-  only_if: true
+  only_if: $CIRRUS_CRON != "" || $CIRRUS_TAG != ""
   skip: $CIRRUS_CHANGE_IN_REPO == $CIRRUS_LAST_GREEN_CHANGE
   macos_instance:
-    image: ghcr.io/cirruslabs/macos-sonoma-xcode:15
+    image: ghcr.io/cirruslabs/macos-monterey-xcode:14
     memory: 8G
   env:
     CSC_LINK: ENCRYPTED[0078015a03bb6cfdbd80113ae5bbb6f448fd4bbbc40efd81bf2cb1554373046b475a4d7c77e3e3e82ac1ce2f7e3d2da5]
@@ -134,41 +134,36 @@ silicon_mac_task:
     ROLLING_UPLOAD_TOKEN: ENCRYPTED[e19187268935fd1a2e1db3304105cc4bf37d5f5a46ba519a1b952f8ac9a3d01982fa9b8274b838547aa37920774b7518]
   prepare_script:
     - brew update
-    - brew uninstall node icu4c
-    - brew install git python@$PYTHON_VERSION python-setuptools
+    - brew install node@16 yarn git python@$PYTHON_VERSION
+    - python3 -m pip install setuptools
     - git submodule init
     - git submodule update
     - ln -s /opt/homebrew/bin/python$PYTHON_VERSION /opt/homebrew/bin/python
-    - export PATH="/opt/homebrew/bin:$PATH"
-    - mkdir tj_n && cd tj_n
-    - curl -L https://github.com/tj/n/archive/0ce85771fdff8f4b3e09ade700461b4f58a64444.tar.gz | tar x
-    - sudo bash ./n-0ce85771fdff8f4b3e09ade700461b4f58a64444/bin/n 16
-    - cd ..
-    - sudo npm install -g yarn npm@8
+    - export PATH="/opt/homebrew/bin:/opt/homebrew/opt/node@16/bin:$PATH"
     - sed -i -e "s/[0-9]*-dev/`date -u +%Y%m%d%H`/g" package.json
   install_script:
-    - export PATH="/opt/homebrew/bin:$PATH"
+    - export PATH="/opt/homebrew/bin:/opt/homebrew/opt/node@16/bin:$PATH"
     - yarn install --ignore-engines || yarn install --ignore-engines
   build_script:
-    - export PATH="/opt/homebrew/bin:$PATH"
+    - export PATH="/opt/homebrew/bin:/opt/homebrew/opt/node@16/bin:$PATH"
     - yarn build
     - yarn run build:apm
   build_binary_script:
-    - export PATH="/opt/homebrew/bin:$PATH"
+    - export PATH="/opt/homebrew/bin:/opt/homebrew/opt/node@16/bin:$PATH"
     - yarn dist || yarn dist
   rename_binary_script:
-    - export PATH="/opt/homebrew/bin:$PATH"
+    - export PATH="/opt/homebrew/bin:/opt/homebrew/opt/node@16/bin:$PATH"
     - node script/rename.js "Silicon.Mac"
   binary_artifacts:
     path: ./binaries/*
   test_script:
-    - export PATH="/opt/homebrew/bin:$PATH"
+    - export PATH="/opt/homebrew/bin:/opt/homebrew/opt/node@16/bin:$PATH"
     - rm -R node_modules/electron; yarn install --check-files
     - hdiutil mount binaries/*Pulsar*dmg
     - export BINARY_NAME=`ls /Volumes/Pulsar*/Pulsar.app/Contents/MacOS/Pulsar`
     - PLAYWRIGHT_JUNIT_OUTPUT_NAME=report.xml npx playwright test --reporter=junit,list
   rolling_upload_script:
-    - export PATH="/opt/homebrew/bin:$PATH"
+    - export PATH="/opt/homebrew/bin:/opt/homebrew/opt/node@16/bin:$PATH"
     - cd ./script/rolling-release-scripts
     - npm install
     - node ./rolling-release-binary-upload.js cirrus
@@ -183,7 +178,7 @@ silicon_mac_task:
 # intel_mac_task:
 #   alias: mac
 #   macos_instance:
-#     image: ghcr.io/cirruslabs/macos-sonoma-xcode:15
+#     image: ghcr.io/cirruslabs/macos-monterey-xcode:14
 #     memory: 8G
 #   env:
 #     CSC_LINK: ENCRYPTED[0078015a03bb6cfdbd80113ae5bbb6f448fd4bbbc40efd81bf2cb1554373046b475a4d7c77e3e3e82ac1ce2f7e3d2da5]
@@ -196,32 +191,30 @@ silicon_mac_task:
 #     - echo A | softwareupdate --install-rosetta
 #     - arch -x86_64 xcode-select --install
 #     - arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-#     - export PATH="/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
 #     - arch -x86_64 brew update
-#     - brew uninstall node icu4c
-#     - arch -x86_64 brew install node@16 git python@$PYTHON_VERSION python-setuptools
+#     - arch -x86_64 brew install node@16 yarn git python@$PYTHON_VERSION
 #     - ln -s /usr/local/bin/python$PYTHON_VERSION /usr/local/bin/python
-#     - npm install -g yarn
 #     - git submodule init
 #     - git submodule update
 #     - sed -i -e "s/[0-9]*-dev/`date -u +%Y%m%d%H`/g" package.json
 #   install_script:
-#     - export PATH="/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
 #     - arch -x86_64 npx yarn install --ignore-engines || arch -x86_64 npx yarn install --ignore-engines
 #   build_script:
-#     - export PATH="/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
 #     - arch -x86_64 npx yarn build
 #     - arch -x86_64 yarn run build:apm
 #   build_binary_script:
-#     - export PATH="/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
 #     - arch -x86_64 npx yarn dist || arch -x86_64 npx yarn dist
 #   rename_binary_script:
-#     - export PATH="/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
 #     - node script/rename.js "Intel.Mac"
 #   binary_artifacts:
 #     path: ./binaries/*
 #   test_script:
-#     - export PATH="/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
 #     - rm -R node_modules/electron; yarn install --check-files
 #     - hdiutil mount binaries/*Pulsar*dmg
 #     - export BINARY_NAME=`ls /Volumes/Pulsar*/Pulsar.app/Contents/MacOS/Pulsar`
@@ -277,7 +270,7 @@ silicon_mac_task:
 
 silently_mark_skipped_or_no_scheduled_tasks_builds_as_failed_task:
   skip_notifications: true
-  only_if: false
+  only_if: $CIRRUS_CRON == "" && $CIRRUS_TAG == ""
   ### !!! ^ Don't forget to update this appropriately if our `only_if:` or `skip:` logic changes for the other tasks! !!! ###
   ### !!! ^ We want this task to run [only] if all other tasks would have skipped. !!! ###
   container:
