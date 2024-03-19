@@ -144,7 +144,7 @@ silicon_mac_task:
     - curl -L https://github.com/tj/n/archive/0ce85771fdff8f4b3e09ade700461b4f58a64444.tar.gz | tar x
     - sudo bash ./n-0ce85771fdff8f4b3e09ade700461b4f58a64444/bin/n 16
     - cd ..
-    - npm install -g yarn
+    - sudo npm install -g yarn
     - sed -i -e "s/[0-9]*-dev/`date -u +%Y%m%d%H`/g" package.json
   install_script:
     - export PATH="/opt/homebrew/bin:$PATH"
@@ -196,7 +196,7 @@ silicon_mac_task:
 #     - echo A | softwareupdate --install-rosetta
 #     - arch -x86_64 xcode-select --install
 #     - arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/bin:$PATH"
 #     - arch -x86_64 brew update
 #     - brew uninstall node icu4c
 #     - arch -x86_64 brew install node@16 git python@$PYTHON_VERSION python-setuptools
@@ -206,22 +206,22 @@ silicon_mac_task:
 #     - git submodule update
 #     - sed -i -e "s/[0-9]*-dev/`date -u +%Y%m%d%H`/g" package.json
 #   install_script:
-#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/bin:$PATH"
 #     - arch -x86_64 npx yarn install --ignore-engines || arch -x86_64 npx yarn install --ignore-engines
 #   build_script:
-#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/bin:$PATH"
 #     - arch -x86_64 npx yarn build
 #     - arch -x86_64 yarn run build:apm
 #   build_binary_script:
-#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/bin:$PATH"
 #     - arch -x86_64 npx yarn dist || arch -x86_64 npx yarn dist
 #   rename_binary_script:
-#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/bin:$PATH"
 #     - node script/rename.js "Intel.Mac"
 #   binary_artifacts:
 #     path: ./binaries/*
 #   test_script:
-#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/bin:$PATH"
 #     - rm -R node_modules/electron; yarn install --check-files
 #     - hdiutil mount binaries/*Pulsar*dmg
 #     - export BINARY_NAME=`ls /Volumes/Pulsar*/Pulsar.app/Contents/MacOS/Pulsar`
