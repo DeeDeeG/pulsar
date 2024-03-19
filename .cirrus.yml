@@ -56,7 +56,7 @@ env:
 
 arm_linux_task:
   alias: linux
-  only_if: $CIRRUS_CRON != "" || $CIRRUS_TAG != ""
+  only_if: false
   skip: $CIRRUS_CHANGE_IN_REPO == $CIRRUS_LAST_GREEN_CHANGE
   arm_container:
     image: node:16-slim
@@ -120,7 +120,7 @@ arm_linux_task:
 
 silicon_mac_task:
   alias: mac
-  only_if: $CIRRUS_CRON != "" || $CIRRUS_TAG != ""
+  only_if: true
   skip: $CIRRUS_CHANGE_IN_REPO == $CIRRUS_LAST_GREEN_CHANGE
   macos_instance:
     image: ghcr.io/cirruslabs/macos-ventura-xcode:latest
@@ -270,7 +270,7 @@ silicon_mac_task:
 
 silently_mark_skipped_or_no_scheduled_tasks_builds_as_failed_task:
   skip_notifications: true
-  only_if: $CIRRUS_CRON == "" && $CIRRUS_TAG == ""
+  only_if: false
   ### !!! ^ Don't forget to update this appropriately if our `only_if:` or `skip:` logic changes for the other tasks! !!! ###
   ### !!! ^ We want this task to run [only] if all other tasks would have skipped. !!! ###
   container:
