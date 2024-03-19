@@ -133,46 +133,42 @@ silicon_mac_task:
     TEAM_ID: ENCRYPTED[11f3fedfbaf4aff1859bf6c105f0437ace23d84f5420a2c1cea884fbfa43b115b7834a463516d50cb276d4c4d9128b49]
     ROLLING_UPLOAD_TOKEN: ENCRYPTED[e19187268935fd1a2e1db3304105cc4bf37d5f5a46ba519a1b952f8ac9a3d01982fa9b8274b838547aa37920774b7518]
   prepare_script:
-    - brew ls
-    - ls /opt/homebrew
-    - ls /opt/homebrew/bin
-    - rm '/opt/homebrew/bin/yarn' '/opt/homebrew/bin/yarnpkg'
     - brew update
-    - brew install node@16 yarn git python@$PYTHON_VERSION python-setuptools
+    - brew uninstall node icu4c
+    - brew install git python@$PYTHON_VERSION python-setuptools
     - git submodule init
     - git submodule update
     - ln -s /opt/homebrew/bin/python$PYTHON_VERSION /opt/homebrew/bin/python
-    - export PATH="/opt/homebrew/opt/node@16/bin:/opt/homebrew/bin:$PATH"
+    - export PATH="/opt/homebrew/bin:$PATH"
+    - mkdir tj_n && cd tj_n
+    - curl -L https://github.com/tj/n/archive/0ce85771fdff8f4b3e09ade700461b4f58a64444.tar.gz | tar x
+    - sudo bash ./n-0ce85771fdff8f4b3e09ade700461b4f58a64444/bin/n 16
+    - cd ..
+    - sudo npm install -g yarn npm@8
     - sed -i -e "s/[0-9]*-dev/`date -u +%Y%m%d%H`/g" package.json
   install_script:
-    - export LDFLAGS="-L/opt/homebrew/opt/node@16/lib"
-    - export CPPFLAGS="-I/opt/homebrew/opt/node@16/include"
-    - export PATH="/opt/homebrew/opt/node@16/bin:/opt/homebrew/bin:$PATH"
+    - export PATH="/opt/homebrew/bin:$PATH"
     - yarn install --ignore-engines || yarn install --ignore-engines
   build_script:
-    - export LDFLAGS="-L/opt/homebrew/opt/node@16/lib"
-    - export CPPFLAGS="-I/opt/homebrew/opt/node@16/include"
-    - export PATH="/opt/homebrew/opt/node@16/bin:/opt/homebrew/bin:$PATH"
+    - export PATH="/opt/homebrew/bin:$PATH"
     - yarn build
     - yarn run build:apm
   build_binary_script:
-    - export LDFLAGS="-L/opt/homebrew/opt/node@16/lib"
-    - export CPPFLAGS="-I/opt/homebrew/opt/node@16/include"
-    - export PATH="/opt/homebrew/opt/node@16/bin:/opt/homebrew/bin:$PATH"
+    - export PATH="/opt/homebrew/bin:$PATH"
     - yarn dist || yarn dist
   rename_binary_script:
-    - export PATH="/opt/homebrew/opt/node@16/bin:/opt/homebrew/bin:$PATH"
+    - export PATH="/opt/homebrew/bin:$PATH"
     - node script/rename.js "Silicon.Mac"
   binary_artifacts:
     path: ./binaries/*
   test_script:
-    - export PATH="/opt/homebrew/opt/node@16/bin:/opt/homebrew/bin:$PATH"
+    - export PATH="/opt/homebrew/bin:$PATH"
     - rm -R node_modules/electron; yarn install --check-files
     - hdiutil mount binaries/*Pulsar*dmg
     - export BINARY_NAME=`ls /Volumes/Pulsar*/Pulsar.app/Contents/MacOS/Pulsar`
     - PLAYWRIGHT_JUNIT_OUTPUT_NAME=report.xml npx playwright test --reporter=junit,list
   rolling_upload_script:
-    - export PATH="/opt/homebrew/opt/node@16/bin:/opt/homebrew/bin:$PATH"
+    - export PATH="/opt/homebrew/bin:$PATH"
     - cd ./script/rolling-release-scripts
     - npm install
     - node ./rolling-release-binary-upload.js cirrus
@@ -200,30 +196,32 @@ silicon_mac_task:
 #     - echo A | softwareupdate --install-rosetta
 #     - arch -x86_64 xcode-select --install
 #     - arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/bin:$PATH"
 #     - arch -x86_64 brew update
-#     - arch -x86_64 brew install node@16 yarn git python@$PYTHON_VERSION python-setuptools
+#     - brew uninstall node icu4c
+#     - arch -x86_64 brew install node@16 git python@$PYTHON_VERSION python-setuptools
 #     - ln -s /usr/local/bin/python$PYTHON_VERSION /usr/local/bin/python
+#     - npm install -g yarn
 #     - git submodule init
 #     - git submodule update
 #     - sed -i -e "s/[0-9]*-dev/`date -u +%Y%m%d%H`/g" package.json
 #   install_script:
-#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/bin:$PATH"
 #     - arch -x86_64 npx yarn install --ignore-engines || arch -x86_64 npx yarn install --ignore-engines
 #   build_script:
-#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/bin:$PATH"
 #     - arch -x86_64 npx yarn build
 #     - arch -x86_64 yarn run build:apm
 #   build_binary_script:
-#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/bin:$PATH"
 #     - arch -x86_64 npx yarn dist || arch -x86_64 npx yarn dist
 #   rename_binary_script:
-#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/bin:$PATH"
 #     - node script/rename.js "Intel.Mac"
 #   binary_artifacts:
 #     path: ./binaries/*
 #   test_script:
-#     - export PATH="/usr/local/opt/node@16/bin:/usr/local/bin:$PATH"
+#     - export PATH="/usr/local/bin:$PATH"
 #     - rm -R node_modules/electron; yarn install --check-files
 #     - hdiutil mount binaries/*Pulsar*dmg
 #     - export BINARY_NAME=`ls /Volumes/Pulsar*/Pulsar.app/Contents/MacOS/Pulsar`
