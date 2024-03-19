@@ -142,13 +142,19 @@ silicon_mac_task:
     - export PATH="/opt/homebrew/opt/node@16/bin:/opt/homebrew/bin:$PATH"
     - sed -i -e "s/[0-9]*-dev/`date -u +%Y%m%d%H`/g" package.json
   install_script:
+    - export LDFLAGS="-L/opt/homebrew/opt/node@16/lib"
+    - export CPPFLAGS="-I/opt/homebrew/opt/node@16/include"
     - export PATH="/opt/homebrew/opt/node@16/bin:/opt/homebrew/bin:$PATH"
     - yarn install --ignore-engines || yarn install --ignore-engines
   build_script:
+    - export LDFLAGS="-L/opt/homebrew/opt/node@16/lib"
+    - export CPPFLAGS="-I/opt/homebrew/opt/node@16/include"
     - export PATH="/opt/homebrew/opt/node@16/bin:/opt/homebrew/bin:$PATH"
     - yarn build
     - yarn run build:apm
   build_binary_script:
+    - export LDFLAGS="-L/opt/homebrew/opt/node@16/lib"
+    - export CPPFLAGS="-I/opt/homebrew/opt/node@16/include"
     - export PATH="/opt/homebrew/opt/node@16/bin:/opt/homebrew/bin:$PATH"
     - yarn dist || yarn dist
   rename_binary_script:
