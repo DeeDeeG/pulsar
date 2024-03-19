@@ -133,7 +133,7 @@ silicon_mac_task:
     TEAM_ID: ENCRYPTED[11f3fedfbaf4aff1859bf6c105f0437ace23d84f5420a2c1cea884fbfa43b115b7834a463516d50cb276d4c4d9128b49]
     ROLLING_UPLOAD_TOKEN: ENCRYPTED[e19187268935fd1a2e1db3304105cc4bf37d5f5a46ba519a1b952f8ac9a3d01982fa9b8274b838547aa37920774b7518]
   prepare_script:
-    - rm '/opt/homebrew/bin/yarn'
+    - rm '/opt/homebrew/bin/yarn' '/opt/homebrew/bin/yarnpkg'
     - brew update
     - brew install node@16 yarn git python@$PYTHON_VERSION
     - python3 -m pip install setuptools
