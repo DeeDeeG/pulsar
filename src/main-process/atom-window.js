@@ -80,6 +80,12 @@ module.exports = class AtomWindow extends EventEmitter {
       options.titleBarStyle = 'hiddenInset';
     if (this.shouldHideTitleBar()) options.frame = false;
 
+    if(this.atomApplication.config.get('core.transparentWindows')){
+      options.frame = false;
+      options.transparent = true;
+      delete options.backgroundColor;
+    }
+
     const BrowserWindowConstructor =
       settings.browserWindowConstructor || BrowserWindow;
     this.browserWindow = new BrowserWindowConstructor(options);
