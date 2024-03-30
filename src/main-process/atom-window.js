@@ -81,9 +81,7 @@ module.exports = class AtomWindow extends EventEmitter {
     if (this.shouldHideTitleBar()) options.frame = false;
 
     if(this.atomApplication.config.get('core.transparentWindows')){
-      options.frame = false;
       options.transparent = true;
-      delete options.backgroundColor;
     }
 
     const BrowserWindowConstructor =
