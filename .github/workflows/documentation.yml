@@ -2,7 +2,7 @@ name: Documentation
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "test-gh-action" ]
   workflow_dispatch:
 
 env:
@@ -43,6 +43,13 @@ jobs:
       run: yarn run private-js-docs
 
     - name: Commit All Changes
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: GH Action Documentation
+      run: |
+        echo "" >> package.json
+        if [ -n "`git status -s | grep "^ M"`" ]; then
+          echo "Uncommitted changes to repo files detected. Committing and pushing now."
+          git add -u
+          git commit -m "GH Action Documentation"
+          git push origin HEAD
+        else
+          echo "No changes detected in repo files. Nothing to commit!"
+        fi
