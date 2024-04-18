@@ -48,7 +48,7 @@ jobs:
         if [ -n "`git status -s | grep "^ M"`" ]; then
           echo "Uncommitted changes to repo files detected. Committing and pushing now."
           git add -u
-          git commit -m "GH Action Documentation"
+          git commit -m "GH Action Documentation" -c user.name="${GITHUB_ACTOR}" -c user.email="<${GITHUB_ACTOR}@users.noreply.github.com>"
           git push origin HEAD
         else
           echo "No changes detected in repo files. Nothing to commit!"
