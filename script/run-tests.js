@@ -42,6 +42,14 @@ Tests failed. Retrying failed tests...
 *********************
 
 `)
+
+      if(failed.length === 0) {
+        console.error("ERROR: We are re-running for failed tests, but the list of tests to re-run is empty!")
+        console.error("This should never happen, but unfortunately it has, so there must be a bug in this script (run-tests.js).")
+        console.error("Marking the CI job as 'failed'.")
+        process.exit(1)
+      }
+
       runSpecs(files, failed)
     } else {
       process.exit(code)
