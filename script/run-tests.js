@@ -43,6 +43,9 @@ Tests failed. Retrying failed tests...
 
 `)
 
+      console.log("failed.length is:")
+      console.log(failed.length)
+
       if(failed.length === 0) {
         console.error("ERROR: We are re-running for failed tests, but the list of tests to re-run is empty!")
         console.error("This should never happen, but unfortunately it has, so there must be a bug in this script (run-tests.js).")
