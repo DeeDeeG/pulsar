@@ -1,0 +1,56 @@
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: 'Version to publish (as a draft GitHub Release)'
+
+jobs:
+  make-version-bump-slash-release-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the latest code
+      uses: actions/checkout@v4
+
+    - name: Bump version in package.json
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+      run: |
+        INPUT_VERSION="${INPUT_VERSION/#v/}"
+        # ^ Strip leading "v" in input version string, if present
+        sed -i -e "s/[0-9]*-dev/${INPUT_VERSION}/g" package.json
+        # Replace the existing version string ending in "-dev"
+        # with the new version string from this workflow's "version" input
+
+    - name: Commit changes to package.json
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+      run: |
+        INPUT_VERSION="${INPUT_VERSION/#v/}"
+        git config user.name "${GITHUB_ACTOR}"
+        git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+        git add package.json
+        git switch -c "${INPUT_VERSION}-release"
+        git commit -m "Update version to ${INPUT_VERSION}"
+
+    - name: Push version bump (release) branch to repository
+      run: |
+        git push -u origin HEAD
+
+    - name: Create version bump (release) pull request
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        INPUT_VERSION="${INPUT_VERSION/#v/}"
+        gh pr create -B master -H "${INPUT_VERSION}-release" --title "Release ${INPUT_VERSION}" --body 'Created by Github action'
+
+    - name: Push version bump (release) tag to repository
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+      run: |
+        INPUT_VERSION="${INPUT_VERSION/#v/}"
+        git tag "${INPUT_VERSION}"
+        git push origin "${INPUT_VERSION}"
