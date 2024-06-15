@@ -58,13 +58,14 @@ jobs:
     - name: Push Release tag to repository
       env:
         INPUT_VERSION: ${{ inputs.version }}
-        GITHUB_TOKEN: ${{ secrets.TEST_DEEDEEG_REGULAR_RELEASE_UPLOAD_TOKEN }}
+        REGULAR_RELEASE_UPLOAD_TOKEN: ${{ secrets.TEST_DEEDEEG_REGULAR_RELEASE_UPLOAD_TOKEN }}
       run: |
         if [[ "${INPUT_VERSION}" != v* ]]; then
           # Add leading "v" in input version string, if not already present
           INPUT_VERSION="v${INPUT_VERSION}";
         fi
-        echo "${GITHUB_TOKEN}" | gh auth login --with-token
+        unset GITHUB_TOKEN
+        echo "${REGULAR_RELEASE_UPLOAD_TOKEN}" | gh auth login --with-token
         gh auth setup-git
         git tag "${INPUT_VERSION}"
         git push origin "${INPUT_VERSION}"
