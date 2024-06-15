@@ -71,10 +71,10 @@ jobs:
     - name: Push draft Release to repository
       env:
         INPUT_VERSION: ${{ inputs.version }}
-        GITHUB_TOKEN: ${{ secrets.TEST_DEEDEEG_REGULAR_RELEASE_UPLOAD_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         if [[ "${INPUT_VERSION}" != v* ]]; then
           # Add leading "v" in input version string, if not already present
           INPUT_VERSION="v${INPUT_VERSION}";
         fi
-        gh release create --draft "${INPUT_VERSION}"
+        gh release create --draft "${INPUT_VERSION}" --title "${INPUT_VERSION}"
