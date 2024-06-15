@@ -64,6 +64,7 @@ jobs:
           # Add leading "v" in input version string, if not already present
           INPUT_VERSION="v${INPUT_VERSION}";
         fi
+        echo "${GITHUB_TOKEN}" | gh auth login --with-token
         gh auth setup-git
         git tag "${INPUT_VERSION}"
         git push origin "${INPUT_VERSION}"
