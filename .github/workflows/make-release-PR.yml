@@ -55,13 +55,13 @@ jobs:
         fi
         gh pr create -B master -H "${INPUT_VERSION}-release" --title "Release ${INPUT_VERSION}" --body 'Created by Github action'
 
-    - name: Push version bump (release) tag to repository
+    - name: Push draft Release to repository
       env:
         INPUT_VERSION: ${{ inputs.version }}
+        GITHUB_TOKEN: ${{ secrets.TEST_DEEDEEG_REGULAR_RELEASE_UPLOAD_TOKEN }}
       run: |
         if [[ "${INPUT_VERSION}" != v* ]]; then
           # Add leading "v" in input version string, if not already present
           INPUT_VERSION="v${INPUT_VERSION}";
         fi
-        git tag "${INPUT_VERSION}"
-        git push origin "${INPUT_VERSION}"
+        gh release create --draft "${INPUT_VERSION}"
