@@ -176,7 +176,7 @@ let options = {
         "to": "pulsar.svg"
       },
     ],
-    "executableName": "pulsar",
+    "executableName": "/usr/bin/pulsar",
   },
   "mac": {
     "icon": icnsIcon,
