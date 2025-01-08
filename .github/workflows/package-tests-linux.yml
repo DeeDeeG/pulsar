@@ -162,9 +162,6 @@ jobs:
           - package: "language-yaml"
 
     steps:
-    - name: Fetch/update package lists for apt package repos
-      run: sudo apt-get update
-
     - name: Checkout the latest code
       uses: actions/checkout@v4
     - name: Setup NodeJS
